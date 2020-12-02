@@ -8,7 +8,6 @@ else:
     contents = file.readlines()  
     contain=[]
     for x in contents:
-        x.replace("XX"," ")
         c=re.findall("\d+\.\n", x)
         for X in c:
             number=contents.index(X)
