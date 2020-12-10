@@ -10,12 +10,20 @@ except FileNotFoundError:
 else:
     contents=file.readlines()  
     contain=[]
+    num_count=[]
     contain_dot=[]  #new
     for x in contents:
         c=re.findall("\d+\.\n", x)
         for X in c:
+            num_count.append(X)
             number=contents.index(X)
             contain.append(number)
+    
+    count={}
+    for num_repeat in num_count: 
+        if num_count.count(num_repeat)>1:
+            count[num_repeat]=num_count.count(num_repeat)
+    print(count)
             
     for d in contain:
         if contents[d+1].startswith("."):
