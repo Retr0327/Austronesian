@@ -1,8 +1,9 @@
+# %%timeit
 import re
 from IPython.display import display, HTML
 import pandas as pd 
 
-file_name=str(input("請輸入檔案名稱："))
+file_name= str(input("請輸入檔案名稱："))
 try:
     file=open(file_name+'.txt',"r",encoding="utf-8")    
 except FileNotFoundError:          
@@ -38,15 +39,15 @@ else:
             original_line=contents[z]
             glb_=contents[z+1]
             glc_=contents[z+2]
-            clean_data=re.sub(r'[<>]', "", original_line).replace("^","")
-            clean_data=re.sub(r'(L\d.)', "", clean_data)
-            clean_data=re.sub(r"\b\=\b", "", clean_data)    #delete clitics
-            clean_data=re.sub(r"[\[\]]", "", clean_data) 
-            clean_data=re.sub(r"\-\b", "", clean_data) 
+            clean_data=re.sub(r'([\^\<\>]|(L[\d@].)|(\b\=\b)|\-\b|[\[\]])', "", original_line)
+#             clean_data=re.sub(r'(L\d.)', "", clean_data)
+#             clean_data=re.sub(r"\b\=\b", "", clean_data)    #delete clitics
+#             clean_data=re.sub(r"[\[\]]", "", clean_data) 
+#             clean_data=re.sub(r"\-\b", "", clean_data) 
             clean_data=re.sub(r"(?<=a)\.\b"," ", clean_data)      #delete the dot between words (e.g. daha.ka)
             clean_data=re.sub(r'[\s]+', ' ', clean_data)
             original_line=re.sub(r'[\s]+', ' ', original_line)
-            contents[z]=clean_data.replace("L@","")+"\n"+original_line+"\n"
+            contents[z]=clean_data+"\n"+original_line+"\n"
             glpre=clean_data
             gla=original_line
             glb=re.sub(r"[\s]+", " ", glb_)+"\n"   # glossing b
