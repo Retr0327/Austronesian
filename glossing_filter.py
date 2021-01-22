@@ -1,62 +1,44 @@
-# %%timeit
 import re
-from IPython.display import display, HTML
-import pandas as pd 
+
+def repeat(File):                 #to find the duplicated number
+    num_repeat={}
+    for r in File:
+        if File.count(r)>1:
+            num_repeat[r]=File.count(r)
+    if bool(num_repeat) is True:
+        return num_repeat
+    else:
+        return "沒有重複數值"
 
 file_name= str(input("請輸入檔案名稱："))
+
 try:
-    file=open(file_name+'.txt',"r",encoding="utf-8")    
+    with open(file_name+'.txt',"r",encoding="utf-8") as file:
+        contents=file.readlines()   
+        num_in_contents=[]
+        num_contain=[]
+
+    for x in contents:
+        num=re.findall("\d+\.\n", x)
+        for X in num:
+            num_in_contents.append(X)
+            number=contents.index(X)
+            num_contain.append(number)    #the location of number in contents
+    if repeat(num_in_contents) != "沒有重複數值":
+        print(repeat(num_in_contents))
+    else:
+        first_line=[y+1 for y in num_contain]    
+        for z in first_line:
+            gla=contents[z] 
+            glb=contents[z+1]
+            glc=contents[z+2]
+            glpre=re.sub(r'([\^\<\>]|(L[\d@].)|(\b\=\b)|\-\b|[\[\]]|)', "", gla)    #replace things without space
+            glpre=re.sub(r"(?<=a)\.\b|[\s]+"," ", glpre)        #space filter
+            contents[z]=glpre+"\n"+gla+""   #glpre+gla
+            
+    with open(file_name+'.txt', "w", encoding="utf-8") as a_file:   
+        a_file.writelines(contents)
+
 except FileNotFoundError:          
     print("file is not found")
-else:
-    contents=file.readlines()  
-    contain=[]
-    num_count=[]
-    contain_dot=[]  #new
-    for x in contents:
-        c=re.findall("\d+\.\n", x)
-        for X in c:
-            num_count.append(X)
-            number=contents.index(X)
-            contain.append(number)
-    
-    count={}
-    for num_repeat in num_count: 
-        if num_count.count(num_repeat)>1:
-            count[num_repeat]=num_count.count(num_repeat)
-    if bool(count) is True:
-        print(count)
-    if bool(count) is False:
-        print("沒有重複數值")
-        for d in contain:
-            if contents[d+1].startswith("."):
-                contents[d+2]=". "+contents[d+2]
-                contents[d+3]=". "+contents[d+3]
-
-        contain_1=[y+1 for y in contain]
-        contain_2=[]
-        for z in contain_1:
-            original_line=contents[z]
-            glb_=contents[z+1]
-            glc_=contents[z+2]
-            clean_data=re.sub(r'([\^\<\>]|(L[\d@].)|(\b\=\b)|\-\b|[\[\]])', "", original_line)
-#             clean_data=re.sub(r'(L\d.)', "", clean_data)
-#             clean_data=re.sub(r"\b\=\b", "", clean_data)    #delete clitics
-#             clean_data=re.sub(r"[\[\]]", "", clean_data) 
-#             clean_data=re.sub(r"\-\b", "", clean_data) 
-            clean_data=re.sub(r"(?<=a)\.\b"," ", clean_data)      #delete the dot between words (e.g. daha.ka)
-            clean_data=re.sub(r'[\s]+', ' ', clean_data)
-            original_line=re.sub(r'[\s]+', ' ', original_line)
-            contents[z]=clean_data+"\n"+original_line+"\n"
-            glpre=clean_data
-            gla=original_line
-            glb=re.sub(r"[\s]+", " ", glb_)+"\n"   # glossing b
-            glc=re.sub(r"[\s]+", " ", glc_)+"\n"    # glossing c
-            contents[z+1]=glb
-            contents[z+2]=glc
-        a_file = open(file_name+".txt", "w",)
-        a_file = open(file_name+".txt", "w", encoding="utf-8")
-        a_file.writelines(contents)
-        a_file.close()
-        
         
