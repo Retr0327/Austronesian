@@ -1,4 +1,5 @@
 import re
+import homemade.duplicated
 
 def num_index(src):
     container=[]
@@ -8,12 +9,12 @@ def num_index(src):
             container.append(index)
     return container
 
+file_name= str(input("請輸入檔案名稱："))
 dialect=str(input("代名詞空開？"))
 
-with open("gloss.txt", mode='r', encoding='utf-8') as file:
+with open(file_name+".txt", mode='r', encoding='utf-8') as file:
     contents=file.readlines()
     num_contain=num_index(contents)
-    print(num_contain)
     first_line_index=[y+1 for y in num_contain]
     for i in first_line_index:
         gla=contents[i] 
@@ -27,6 +28,6 @@ with open("gloss.txt", mode='r', encoding='utf-8') as file:
             glpre=re.sub(r"(?<=a)\.\b|[\s]|(\b\=\b)+"," ", glpre)               # space filter (for atayal)
         contents[i]=glpre+"\n"+gla                                              # glpre+gla
 
-with open('gloss.txt', "w", encoding="utf-8") as a_file:   
+with open(file_name+'.txt', "w", encoding="utf-8") as a_file:   
         a_file.writelines(contents)
  
