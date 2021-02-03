@@ -1,44 +1,32 @@
 import re
 
-def repeat(File):                 #to find the duplicated number
-    num_repeat={}
-    for r in File:
-        if File.count(r)>1:
-            num_repeat[r]=File.count(r)
-    if bool(num_repeat) is True:
-        return num_repeat
-    else:
-        return "沒有重複數值"
+def num_index(src):
+    container=[]
+    for index, value in enumerate(contents):
+        num=re.findall('\d+\.\n', value)
+        if num:
+            container.append(index)
+    return container
 
-file_name= str(input("請輸入檔案名稱："))
+dialect=str(input("代名詞空開？"))
 
-try:
-    with open(file_name+'.txt',"r",encoding="utf-8") as file:
-        contents=file.readlines()   
-        num_in_contents=[]
-        num_contain=[]
+with open("gloss.txt", mode='r', encoding='utf-8') as file:
+    contents=file.readlines()
+    num_contain=num_index(contents)
+    print(num_contain)
+    first_line_index=[y+1 for y in num_contain]
+    for i in first_line_index:
+        gla=contents[i] 
+        glb=contents[i+1]
+        glc=contents[i+2]
+        if dialect=='n' or dialect=='n':        # 決定代名詞是否空開
+            glpre=re.sub(r'([\^\<\>]|(L[\d@].)|(\b\=\b)|\-\b|[\[\]]|)', "", gla)    # replace things without space   (for rukai)
+            glpre=re.sub(r"(?<=a)\.\b|[\s]+"," ", glpre)                            # space filter (for rukai)
+        else:
+            glpre=re.sub(r'([\^\<\>]|(L[\d@].)\-\b|[\[\]]|)', "", gla)          # replace things without space  (for atayal)
+            glpre=re.sub(r"(?<=a)\.\b|[\s]|(\b\=\b)+"," ", glpre)               # space filter (for atayal)
+        contents[i]=glpre+"\n"+gla                                              # glpre+gla
 
-    for x in contents:
-        num=re.findall("\d+\.\n", x)
-        for X in num:
-            num_in_contents.append(X)
-            number=contents.index(X)
-            num_contain.append(number)    #the location of number in contents
-    if repeat(num_in_contents) != "沒有重複數值":
-        print(repeat(num_in_contents))
-    else:
-        first_line=[y+1 for y in num_contain]    
-        for z in first_line:
-            gla=contents[z] 
-            glb=contents[z+1]
-            glc=contents[z+2]
-            glpre=re.sub(r'([\^\<\>]|(L[\d@].)|(\b\=\b)|\-\b|[\[\]]|)', "", gla)    #replace things without space
-            glpre=re.sub(r"(?<=a)\.\b|[\s]+"," ", glpre)        #space filter
-            contents[z]=glpre+"\n"+gla+""   #glpre+gla
-            
-    with open(file_name+'.txt', "w", encoding="utf-8") as a_file:   
+with open('gloss.txt', "w", encoding="utf-8") as a_file:   
         a_file.writelines(contents)
-
-except FileNotFoundError:          
-    print("file is not found")
-        
+ 
