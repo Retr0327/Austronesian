@@ -1,5 +1,4 @@
 import re
-import homemade.duplicated
 
 def num_index(src):
     container=[]
