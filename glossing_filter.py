@@ -2,7 +2,7 @@ import re
 
 def num_index(src):
     container=[]
-    for index, value in enumerate(contents):
+    for index, value in enumerate(src):
         num=re.findall('\d+\.\n', value)
         if num:
             container.append(index)
